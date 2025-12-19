@@ -7,5 +7,9 @@
     "plugin-helpers": "node ../../scripts/plugin_helpers",
     "osd": "node ../../scripts/osd",
     "test": "node test/jest"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "4",
+    "react-hook-form": "^7.69.0"
   }
 }

@@ -1,13 +1,14 @@
 import {
-  PluginInitializerContext,
   CoreSetup,
   CoreStart,
-  Plugin,
   Logger,
-} from '../../../src/core/server';
+  Plugin,
+  PluginInitializerContext,
+} from "../../../src/core/server";
 
-import { CustomPluginPluginSetup, CustomPluginPluginStart } from './types';
-import { defineRoutes } from './routes';
+import { registerTodoRoutes } from "./routes/todo.routes";
+import { CustomPluginPluginSetup, CustomPluginPluginStart } from "./types";
+
 
 export class CustomPluginPlugin
   implements Plugin<CustomPluginPluginSetup, CustomPluginPluginStart> {
@@ -18,19 +19,17 @@ export class CustomPluginPlugin
   }
 
   public setup(core: CoreSetup) {
-    this.logger.debug('custom_plugin: Setup');
+    this.logger.debug("custom_plugin: Setup");
     const router = core.http.createRouter();
-
-    // Register server side APIs
-    defineRoutes(router);
+    registerTodoRoutes(router, this.logger);
 
     return {};
   }
 
   public start(core: CoreStart) {
-    this.logger.debug('custom_plugin: Started');
+    this.logger.debug("custom_plugin: Started");
     return {};
   }
 
-  public stop() {}
+  public stop() { }
 }

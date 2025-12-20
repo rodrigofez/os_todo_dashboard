@@ -96,4 +96,45 @@ export class TodoService {
 
     return todoEntity.toPlainObject();
   }
+
+
+  async getAllTodos(query: SearchQuery): Promise<PaginatedResponse<Todo>> {
+    this.logger.debug('TodoService: Fetching all todos');
+
+    const pagination: PaginationParams = {
+      page: query.pagination?.page || 1,
+      pageSize: query.pagination?.pageSize || 20,
+      sortBy: query.pagination?.sortBy || 'created_at',
+      sortOrder: query.pagination?.sortOrder || 'desc',
+    };
+
+    const result = await this.repository.search({
+      ...query,
+      pagination,
+    });
+
+    this.logger.debug(`TodoService: Found ${result.data.length} todos`);
+
+    return result;
+  }
+
+  async searchTodos(query: SearchQuery): Promise<PaginatedResponse<Todo>> {
+    this.logger.debug('TodoService: Searching todos');
+
+    const pagination: PaginationParams = {
+      page: query.pagination?.page || 1,
+      pageSize: query.pagination?.pageSize || 20,
+      sortBy: query.pagination?.sortBy || 'created_at',
+      sortOrder: query.pagination?.sortOrder || 'desc',
+    };
+
+    const result = await this.repository.search({
+      ...query,
+      pagination,
+    });
+
+    this.logger.debug(`TodoService: Found ${result.data.length} todos`);
+
+    return result;
+  }
 }

@@ -1,4 +1,4 @@
-import { Todo, PaginatedResponse } from "../../../common";
+import { Todo, PaginatedResponse, OverviewMetrics, DetailedMetrics } from "../../../common";
 import { TodoEntity } from "../../domain/entities/Todo";
 
 export interface TodoFilters {
@@ -30,4 +30,5 @@ export interface ITodoRepository {
   delete(id: string): Promise<void>;
   search(query: SearchQuery): Promise<PaginatedResponse<Todo>>;
   exists(id: string): Promise<boolean>;
+  getOverviewMetrics(): Promise<OverviewMetrics>;
 }

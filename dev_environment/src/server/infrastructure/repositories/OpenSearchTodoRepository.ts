@@ -2,6 +2,8 @@ import { Logger, OpenSearchClient } from "../../../../../src/core/server";
 import {
   TODO_INDEX_NAME
 } from "../../../common";
+import { TodoEntity } from "../../domain/entities/Todo";
+import { TodoMapper } from "../mappers/TodoMapper";
 import { TODO_INDEX_MAPPING } from "../opensearch/TodoIndexMapping";
 import {
   ITodoRepository,
@@ -35,4 +37,19 @@ export class OpenSearchTodoRepository implements ITodoRepository {
 
     this.logger.debug('TodoRepository initialized successfully');
   }
+
+  async save(todo: TodoEntity): Promise<void> {
+    const doc = TodoMapper.toPersistence(todo);
+
+    await this.client.index({
+      index: TODO_INDEX_NAME,
+      id: doc.id,
+      body: doc,
+      refresh: "wait_for",
+    });
+
+    this.logger.debug(`Saved todo with id ${doc.id}`);
+  }
+
+
 }

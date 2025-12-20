@@ -9,6 +9,7 @@ export const API_ROUTES = {
   TODOS: `${API_BASE_PATH}/todos`,
   TODOS_SEARCH: `${API_BASE_PATH}/todos/search`,
   TODO_BY_ID: (id: string) => `${API_BASE_PATH}/todos/${id}`,
+  OVERVIEW: `${API_BASE_PATH}/overview`,
 } as const;
 
 

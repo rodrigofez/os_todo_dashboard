@@ -146,5 +146,26 @@ export class OpenSearchTodoRepository implements ITodoRepository {
         totalPages: Math.ceil(total / pagination.pageSize),
       },
     };
+
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.client.delete({
+      index: TODO_INDEX_NAME,
+      id,
+      refresh: "wait_for",
+    });
+
+    this.logger.debug(`Deleted todo with id ${id}`);
+  }
+
+  async exists(id: string): Promise<boolean> {
+    const { body } = await this.client.exists({
+      index: TODO_INDEX_NAME,
+      id,
+    });
+
+    return body;
+
   }
 }

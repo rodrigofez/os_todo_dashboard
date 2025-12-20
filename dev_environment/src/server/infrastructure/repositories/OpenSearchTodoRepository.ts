@@ -3,7 +3,7 @@ import {
   TODO_INDEX_NAME
 } from "../../../common";
 import { TodoEntity } from "../../domain/entities/Todo";
-import { TodoMapper } from "../mappers/TodoMapper";
+import { OpenSearchDocument, TodoMapper } from "../mappers/TodoMapper";
 import { TODO_INDEX_MAPPING } from "../opensearch/TodoIndexMapping";
 import {
   ITodoRepository,
@@ -66,4 +66,16 @@ export class OpenSearchTodoRepository implements ITodoRepository {
     this.logger.debug(`Updated todo with id ${id}`);
   }
 
+  async findById(id: string): Promise<TodoEntity | null> {
+    const { body } = await this.client.get({
+      index: TODO_INDEX_NAME,
+      id,
+    });
+
+    if (!body.found) {
+      return null;
+    }
+
+    return TodoMapper.toDomain(body._source as OpenSearchDocument);
+  }
 }

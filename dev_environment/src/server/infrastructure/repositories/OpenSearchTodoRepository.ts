@@ -51,5 +51,19 @@ export class OpenSearchTodoRepository implements ITodoRepository {
     this.logger.debug(`Saved todo with id ${doc.id}`);
   }
 
+  async update(id: string, todo: TodoEntity): Promise<void> {
+    const doc = TodoMapper.toPersistence(todo);
+
+    await this.client.update({
+      index: TODO_INDEX_NAME,
+      id,
+      body: {
+        doc,
+      },
+      refresh: "wait_for",
+    });
+
+    this.logger.debug(`Updated todo with id ${id}`);
+  }
 
 }

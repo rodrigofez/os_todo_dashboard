@@ -157,4 +157,20 @@ export function registerTodoRoutes(
       }
     }, logger)
   );
+
+  router.get(
+    {
+      path: API_ROUTES.OVERVIEW,
+      validate: false,
+    },
+    withService(async (service, context, request, response) => {
+      try {
+        const result = await service.getOverviewMetrics();
+        return response.ok({ body: result });
+      } catch (error) {
+        logger.error(`Error fetching overview: ${error}`);
+        return ErrorHandler.handle(error, response);
+      }
+    }, logger)
+  );
 }

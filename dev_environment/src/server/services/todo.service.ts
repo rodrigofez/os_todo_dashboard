@@ -69,4 +69,31 @@ export class TodoService {
 
     return result;
   }
+
+  async deleteTodo(id: string): Promise<void> {
+    this.logger.debug(`TodoService: Deleting todo with id ${id}`);
+
+    const exists = await this.repository.exists(id);
+
+    if (!exists) {
+      throw new TodoNotFoundError(id);
+    }
+
+    await this.repository.delete(id);
+
+    this.logger.debug(`TodoService: Todo ${id} deleted successfully`);
+  }
+
+
+  async getTodoById(id: string): Promise<Todo> {
+    this.logger.debug(`TodoService: Fetching todo with id ${id}`);
+
+    const todoEntity = await this.repository.findById(id);
+
+    if (!todoEntity) {
+      throw new TodoNotFoundError(id);
+    }
+
+    return todoEntity.toPlainObject();
+  }
 }

@@ -12,8 +12,9 @@ export class CustomPluginPlugin
   public setup(core: CoreSetup): CustomPluginPluginSetup {
     // Register an application into the side navigation menu
     core.application.register({
-      id: 'customPlugin',
+      id: 'todoPlugin',
       title: PLUGIN_NAME,
+      euiIconType: 'notebookApp',
       async mount(params: AppMountParameters) {
         // Load application bundle
         const { renderApp } = await import('./application');
@@ -41,5 +42,5 @@ export class CustomPluginPlugin
     return {};
   }
 
-  public stop() {}
+  public stop() { }
 }

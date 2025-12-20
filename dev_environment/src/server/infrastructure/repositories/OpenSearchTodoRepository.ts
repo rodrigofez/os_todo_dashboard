@@ -1,5 +1,6 @@
 import { Logger, OpenSearchClient } from "../../../../../src/core/server";
 import {
+  OverviewMetrics,
   PaginatedResponse,
   Todo,
   TODO_INDEX_NAME
@@ -167,5 +168,37 @@ export class OpenSearchTodoRepository implements ITodoRepository {
 
     return body;
 
+  }
+
+  async getOverviewMetrics(): Promise<OverviewMetrics> {
+    const { body } = await this.client.search({
+      index: TODO_INDEX_NAME,
+      size: 0,
+      body: {
+        aggs: {
+          task_status: {
+            filters: {
+              filters: {
+                overdue: { range: { due_date: { lt: 'now' } } },
+                due_soon: { range: { due_date: { gte: 'now', lte: 'now+7d/d' } } },
+                errors: { term: { status: 'error' } },
+                completed: { term: { status: 'completed' } },
+                total: { match_all: {} },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const buckets = (body.aggregations as any).task_status.buckets;
+
+    return {
+      overdue: buckets?.overdue?.doc_count ?? 0,
+      due_soon: buckets?.due_soon?.doc_count ?? 0,
+      errors: buckets?.errors?.doc_count ?? 0,
+      completed: buckets?.completed?.doc_count ?? 0,
+      total: buckets?.total?.doc_count ?? 0,
+    };
   }
 }

@@ -6,6 +6,7 @@ export type { Todo } from './types/Todo';
 export type { CreateTodoRequest } from './types/dto/CreateTodoRequest';
 export type { ErrorResponse } from './types/dto/ErrorResponse';
 export type {
+  DetailedMetrics,
   OverviewMetrics,
   StatusCount,
   PriorityCount,

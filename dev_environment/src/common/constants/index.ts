@@ -10,6 +10,7 @@ export const API_ROUTES = {
   TODOS_SEARCH: `${API_BASE_PATH}/todos/search`,
   TODO_BY_ID: (id: string) => `${API_BASE_PATH}/todos/${id}`,
   OVERVIEW: `${API_BASE_PATH}/overview`,
+  METRICS: `${API_BASE_PATH}/metrics`,
 } as const;
 
 

@@ -31,4 +31,5 @@ export interface ITodoRepository {
   search(query: SearchQuery): Promise<PaginatedResponse<Todo>>;
   exists(id: string): Promise<boolean>;
   getOverviewMetrics(): Promise<OverviewMetrics>;
+  getDetailedMetrics(): Promise<DetailedMetrics>;
 }

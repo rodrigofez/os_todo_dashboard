@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { API_BASE_PATH, PaginatedResponse, Todo, UpdateTodoRequest } from "../../common";
 import { useApi } from "../context/ApiContext";
+import { QUERY_KEYS } from "../constants/queryKeys";
 
 export function useUpdateTodo() {
   const { http } = useApi();
@@ -9,7 +10,7 @@ export function useUpdateTodo() {
   return useMutation({
     onMutate: ({ id, data }) => {
       // optimistically update task
-      queryClient.setQueryData(['todos'], (oldData: PaginatedResponse<Todo> | undefined) => {
+      queryClient.setQueryData(QUERY_KEYS.TODOS, (oldData: PaginatedResponse<Todo> | undefined) => {
         if (oldData) return {
           data: oldData.data.map((todo) => todo.id === id ? { ...todo, ...data } : todo),
           pagination: oldData.pagination
@@ -19,7 +20,7 @@ export function useUpdateTodo() {
       })
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['todos'] })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.TODOS })
     },
     mutationFn: async ({ id, data }: { id: string, data: UpdateTodoRequest }) => http.put<Todo>(`${API_BASE_PATH}/todos/${id}`, {
       body: JSON.stringify(data),

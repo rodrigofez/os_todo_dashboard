@@ -3,6 +3,7 @@ import React from "react";
 import { Route, BrowserRouter as Router } from "react-router-dom";
 import { CoreStart } from "../../../../src/core/public";
 import { NavigationPublicPluginStart } from "../../../../src/plugins/navigation/public";
+import { Overview } from "../pages/Overview";
 import { MainLayout } from "../layouts/MainLayout";
 import { ApiProvider } from "../context/ApiContext";
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -27,7 +28,7 @@ export const CustomPluginApp = ({
         <QueryClientProvider client={queryClient}>
           <ApiProvider http={http}>
             <MainLayout>
-              <Route exact path='/' component={<></>} />
+              <Route exact path='/' component={Overview} />
               <Route path='/metrics' component={<></>} />
             </MainLayout>
           </ApiProvider>

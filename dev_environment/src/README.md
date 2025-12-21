@@ -218,3 +218,9 @@ const response = createMockPaginatedResponse(todos);
 const http = createMockHttpSetup();
 http.get.mockResolvedValue(response);
 ```
+
+## Important Improvements (not implemented due to lack of time)
+- Bulk operations.
+- Better error feedback in frontend.
+- Introduce zod to do form validations.
+- Allow to update more than the status.

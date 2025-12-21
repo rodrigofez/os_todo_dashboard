@@ -3,4 +3,5 @@ export const QUERY_KEYS = {
   TODOS_WITH_PARAMS: (params: string) => ['todos', params] as const,
   METRICS: ['todos', 'metrics'] as const,
   OVERVIEW_METRICS: ['todos', 'overview-metrics'] as const,
+  SEED: ['todos', 'seed'] as const,
 } as const;

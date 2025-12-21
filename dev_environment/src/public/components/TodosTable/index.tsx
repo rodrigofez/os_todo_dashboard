@@ -11,6 +11,7 @@ import {
 } from "@elastic/eui";
 import React from "react";
 import { useTodoTable } from "../../hooks/useTodoTable";
+import { useSeed } from "../../hooks/useSeed";
 import { TodoTable } from "./Table";
 import { TodoModal } from "../TodoForm/TodoModal";
 import { Filters } from "../Filter/Filter";
@@ -42,6 +43,8 @@ export const Table: React.FC = () => {
         deleteLoading,
     } = useTodoTable();
 
+    const { mutate: seedData, isPending: isSeedLoading } = useSeed();
+
     if (isError) {
         return (
             <EuiCallOut title="Error loading tasks" color="danger" iconType="alert">
@@ -64,9 +67,21 @@ export const Table: React.FC = () => {
                     </EuiTitle>
                 </EuiFlexItem>
                 <EuiFlexItem grow={false}>
-                    <EuiButton fill onClick={openModal}>
-                        Add new task +
-                    </EuiButton>
+                    <EuiFlexGroup gutterSize="s">
+                        <EuiFlexItem grow={false}>
+                            <EuiButton
+                                onClick={() => seedData(200)}
+                                isLoading={isSeedLoading}
+                            >
+                                Seed Data (200)
+                            </EuiButton>
+                        </EuiFlexItem>
+                        <EuiFlexItem grow={false}>
+                            <EuiButton fill onClick={openModal}>
+                                Add new task +
+                            </EuiButton>
+                        </EuiFlexItem>
+                    </EuiFlexGroup>
                 </EuiFlexItem>
             </EuiFlexGroup>
             <EuiHorizontalRule />

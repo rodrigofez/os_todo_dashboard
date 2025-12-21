@@ -1,10 +1,11 @@
 import { IRouter, Logger } from '../../../../src/core/server';
-import { API_ROUTES } from '../../common';
+import { API_ROUTES, SEED_DATA_COUNT } from '../../common';
 import { ErrorHandler } from '../api/middleware/errorHandler';
 import {
   createTodoSchema,
   getTodosQuerySchema,
   searchQuerySchema,
+  seedSchema,
   todoIdSchema,
   updateTodoSchema,
 } from '../api/schemas/todo.schema';
@@ -185,6 +186,25 @@ export function registerTodoRoutes(
         return response.ok({ body: result });
       } catch (error) {
         logger.error(`Error fetching metrics: ${error}`);
+        return ErrorHandler.handle(error, response);
+      }
+    }, logger)
+  );
+
+  router.post(
+    {
+      path: API_ROUTES.SEED,
+      validate: {
+        body: seedSchema,
+      },
+    },
+    withService(async (service, context, request, response) => {
+      try {
+        const { count } = request.body;
+        const result = await service.seedData(count);
+        return response.ok({ body: result });
+      } catch (error) {
+        logger.error(`Error seeding data: ${error}`);
         return ErrorHandler.handle(error, response);
       }
     }, logger)

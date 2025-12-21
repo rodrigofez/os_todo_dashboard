@@ -149,4 +149,11 @@ export class TodoService {
     this.logger.debug('TodoService: Fetching detailed metrics');
     return await this.repository.getDetailedMetrics();
   }
+
+  async seedData(count: number): Promise<{ created: number }> {
+    this.logger.debug(`TodoService: Seeding ${count} todos`);
+    const result = await this.repository.seed(count);
+    this.logger.debug(`TodoService: Successfully seeded ${result.created} todos`);
+    return result;
+  }
 }

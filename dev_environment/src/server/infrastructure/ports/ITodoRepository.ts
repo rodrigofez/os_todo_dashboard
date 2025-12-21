@@ -32,4 +32,5 @@ export interface ITodoRepository {
   exists(id: string): Promise<boolean>;
   getOverviewMetrics(): Promise<OverviewMetrics>;
   getDetailedMetrics(): Promise<DetailedMetrics>;
+  seed(count: number): Promise<{ created: number }>;
 }

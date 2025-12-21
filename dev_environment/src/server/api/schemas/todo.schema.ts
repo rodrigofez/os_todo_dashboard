@@ -1,5 +1,9 @@
 import { schema, TypeOf } from '@osd/config-schema';
 
+export const seedSchema = schema.object({
+  count: schema.number({ defaultValue: 200, min: 1, max: 1000 }),
+});
+
 export const createTodoSchema = schema.object({
   title: schema.string({ minLength: 1, maxLength: 200 }),
   description: schema.maybe(schema.string({ maxLength: 2000 })),

@@ -8,6 +8,8 @@ import {
   StatusCount,
   TagCount,
   Todo,
+  TodoPriority,
+  TodoStatus,
   TODO_INDEX_NAME
 } from "../../../common";
 import { TodoEntity } from "../../domain/entities/Todo";
@@ -288,5 +290,82 @@ export class OpenSearchTodoRepository implements ITodoRepository {
       byTag,
       byDate,
     };
+  }
+
+  async seed(count: number): Promise<{ created: number }> {
+    const { faker } = await import('@faker-js/faker');
+
+    const todos: Todo[] = [];
+    const assignees = Array(10).fill(null).map(() => faker.person.fullName());
+    const allTags = ['frontend', 'backend', 'api', 'bug', 'feature', 'documentation', 'testing'];
+
+    for (let i = 0; i < count; i++) {
+      const status = faker.helpers.arrayElement([
+        TodoStatus.PLANNED,
+        TodoStatus.IN_PROGRESS,
+        TodoStatus.COMPLETED,
+        TodoStatus.ERROR,
+      ]);
+
+      const createdAt = faker.date.recent({ days: 7 });
+
+      let completedDate: Date | undefined;
+      if (status === TodoStatus.COMPLETED) {
+        completedDate = faker.date.between({
+          from: createdAt,
+          to: new Date()
+        });
+      }
+
+      let dueDate: Date | undefined;
+      if (faker.datatype.boolean({ probability: 0.6 })) {
+        if (status === TodoStatus.COMPLETED && completedDate) {
+          // For completed: due date before completed date (realistic)
+          dueDate = faker.date.between({
+            from: createdAt,
+            to: completedDate
+          });
+        } else {
+          dueDate = faker.date.soon({ days: 7 });
+        }
+      }
+
+      const todoData: Todo = {
+        id: faker.string.uuid(),
+        title: faker.lorem.sentence({ min: 8, max: 12 }),
+        description: faker.datatype.boolean({ probability: 0.4 })
+          ? faker.lorem.paragraph()
+          : undefined,
+        status,
+        priority: faker.helpers.arrayElement([
+          TodoPriority.LOW,
+          TodoPriority.MEDIUM,
+          TodoPriority.HIGH,
+          TodoPriority.CRITICAL,
+        ]),
+        tags: faker.helpers.shuffle(allTags).slice(0, faker.number.int({ min: 0, max: 3 })),
+        assignee: assignees[i % assignees.length],
+        created_at: createdAt.toISOString(),
+        updated_at: completedDate?.toISOString() || createdAt.toISOString(),
+        completed_date: completedDate?.toISOString(),
+        due_date: dueDate?.toISOString(),
+      };
+
+      todos.push(todoData);
+    }
+
+    const todoEntities = todos.map(todo => TodoEntity.fromPersistence(todo));
+
+    await this.client.bulk({
+      index: TODO_INDEX_NAME,
+      body: todoEntities.flatMap(todo => [
+        { index: { _index: TODO_INDEX_NAME, _id: todo.getId() } },
+        TodoMapper.toPersistence(todo),
+      ]),
+      refresh: 'wait_for',
+    });
+
+    this.logger.debug(`Seeded ${count} todos`);
+    return { created: count };
   }
 }

@@ -1,5 +1,6 @@
 import { Logger } from '../../../../src/core/server';
 import {
+  DetailedMetrics,
   OverviewMetrics,
   PaginatedResponse,
   Todo,
@@ -142,5 +143,10 @@ export class TodoService {
   async getOverviewMetrics(): Promise<OverviewMetrics> {
     this.logger.debug('TodoService: Fetching overview metrics');
     return await this.repository.getOverviewMetrics();
+  }
+
+  async getDetailedMetrics(): Promise<DetailedMetrics> {
+    this.logger.debug('TodoService: Fetching detailed metrics');
+    return await this.repository.getDetailedMetrics();
   }
 }

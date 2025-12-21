@@ -173,4 +173,20 @@ export function registerTodoRoutes(
       }
     }, logger)
   );
+
+  router.get(
+    {
+      path: API_ROUTES.METRICS,
+      validate: false,
+    },
+    withService(async (service, context, request, response) => {
+      try {
+        const result = await service.getDetailedMetrics();
+        return response.ok({ body: result });
+      } catch (error) {
+        logger.error(`Error fetching metrics: ${error}`);
+        return ErrorHandler.handle(error, response);
+      }
+    }, logger)
+  );
 }

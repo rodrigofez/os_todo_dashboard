@@ -21,6 +21,9 @@ export const TodoStatusSelect: React.FC<Props> = ({ id, status }) => {
     return (
         <EuiSuperSelect
             fullWidth
+            style={{
+                width: '160px'
+            }}
             options={options.map((opt) => ({
                 value: opt.value,
                 inputDisplay: (

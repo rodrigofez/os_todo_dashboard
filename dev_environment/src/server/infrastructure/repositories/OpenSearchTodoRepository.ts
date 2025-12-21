@@ -1,7 +1,12 @@
 import { Logger, OpenSearchClient } from "../../../../../src/core/server";
 import {
+  DailyMetrics,
+  DetailedMetrics,
   OverviewMetrics,
   PaginatedResponse,
+  PriorityCount,
+  StatusCount,
+  TagCount,
   Todo,
   TODO_INDEX_NAME
 } from "../../../common";
@@ -38,7 +43,6 @@ export class OpenSearchTodoRepository implements ITodoRepository {
     } else {
       this.logger.debug(`Index ${TODO_INDEX_NAME} already exists`);
     }
-
     this.logger.debug('TodoRepository initialized successfully');
   }
 
@@ -199,6 +203,90 @@ export class OpenSearchTodoRepository implements ITodoRepository {
       errors: buckets?.errors?.doc_count ?? 0,
       completed: buckets?.completed?.doc_count ?? 0,
       total: buckets?.total?.doc_count ?? 0,
+    };
+  }
+
+  async getDetailedMetrics(): Promise<DetailedMetrics> {
+    const countRes = await this.client.count({ index: TODO_INDEX_NAME });
+    const total = countRes.body.count ?? 0;
+
+    const { body } = await this.client.search({
+      index: TODO_INDEX_NAME,
+      size: 0,
+      body: {
+        aggs: {
+          by_status: { terms: { field: 'status', size: 10 } },
+          by_priority: { terms: { field: 'priority', size: 10 } },
+          by_tag: { terms: { field: 'tags', size: 20 } },
+          created_per_day: {
+            date_histogram: {
+              field: 'created_at',
+              calendar_interval: 'day',
+              format: 'MM-dd-YYYY',
+            },
+          },
+          completed_per_day: {
+            filter: { term: { status: 'completed' } },
+            aggs: {
+              per_day: {
+                date_histogram: {
+                  field: 'completed_date',
+                  calendar_interval: 'day',
+                  format: 'MM-dd-YYYY',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const aggs = (body as any).aggregations || {};
+
+    const byStatus: StatusCount[] = aggs.by_status?.buckets?.map((b: any) => ({
+      status: b.key,
+      count: b.doc_count,
+    })) ?? [];
+
+    const byPriority: PriorityCount[] = aggs.by_priority?.buckets?.map((b: any) => ({
+      priority: b.key,
+      count: b.doc_count,
+    })) ?? [];
+
+    const byTag: TagCount[] = aggs.by_tag?.buckets?.map((b: any) => ({
+      tag: b.key,
+      count: b.doc_count,
+    })) ?? [];
+
+    const createdBuckets = aggs.created_per_day?.buckets ?? [];
+    const completedBuckets = aggs.completed_per_day?.per_day?.buckets ?? [];
+
+    const byDate: DailyMetrics[] = createdBuckets.map((c: any) => {
+      const completed = completedBuckets.find(
+        (x: any) => x.key_as_string === c.key_as_string
+      );
+      return {
+        day: c.key_as_string,
+        created: c.doc_count,
+        completed: completed ? completed.doc_count : 0,
+      };
+    });
+
+    const completedCount = byStatus.find((s) => s.status === 'completed')?.count ?? 0;
+    const failedCount = byStatus.find((s) => s.status === 'error')?.count ?? 0;
+    const pendingCount = total - (completedCount + failedCount);
+    const completionRate = total > 0 ? completedCount / total : 0;
+
+    return {
+      total,
+      completed: completedCount,
+      pending: pendingCount,
+      failed: failedCount,
+      completionRate,
+      byStatus,
+      byPriority,
+      byTag,
+      byDate,
     };
   }
 }

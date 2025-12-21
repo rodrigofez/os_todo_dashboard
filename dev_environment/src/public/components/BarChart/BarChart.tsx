@@ -6,6 +6,7 @@ import {
     ScaleType,
     Settings,
 } from "@elastic/charts";
+import { euiPaletteColorBlind } from "@elastic/eui";
 import React, { useMemo } from "react";
 
 export interface BarChartData {
@@ -26,14 +27,22 @@ export const BarChart: React.FC<BarChartProps> = ({
     yAxisTitle = "Value",
 }) => {
 
-    // Create a generic color map from the data if colors are provided
+    // Generate color palette
+    const colors = useMemo(() => euiPaletteColorBlind({
+        rotations: 3,
+        order: "group",
+        direction: "both",
+    }), []);
+
+    // Create a color map for each unique x value
     const colorMap = useMemo(() => {
         const map: Record<string, string> = {};
-        data.forEach((d) => {
-            if (d.color) map[d.x] = d.color;
+        data.forEach((d, index) => {
+            // Use provided color or palette color
+            map[d.x] = d.color || colors[index % colors.length];
         });
         return map;
-    }, [data]);
+    }, [data, colors]);
 
     return (
         <Chart size={{ height: 300 }}>
@@ -63,8 +72,8 @@ export const BarChart: React.FC<BarChartProps> = ({
                 xAccessor="x"
                 yAccessors={["y"]}
                 data={data}
-                // Use color from data map or fallback default
-                color={(key) => colorMap[key.key as string] || "#3498db"}
+                // Use color from map
+                color={(key) => colorMap[key.key as string]}
             />
         </Chart>
     );

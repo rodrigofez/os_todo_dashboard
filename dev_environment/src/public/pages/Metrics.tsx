@@ -13,6 +13,7 @@ import { BarChart } from "../components/BarChart/BarChart";
 import { LineChart } from "../components/LineChart/LineChart";
 import { PieChart } from "../components/PieChart/PieChart";
 import { useMetrics } from "../hooks/useMetrics";
+import { formatLabel } from "../utils/formatters";
 
 export const Metrics: React.FC = () => {
   const { data: metrics, isLoading, isError } = useMetrics();
@@ -70,7 +71,7 @@ export const Metrics: React.FC = () => {
             </EuiTitle>
             <EuiSpacer size="s" />
             <PieChart data={metrics?.byStatus.map((val) => ({
-              label: val.status, value: val.count
+              label: formatLabel(val.status), value: val.count
             })) ?? []} />
           </EuiPanel>
         </EuiFlexItem>
@@ -106,7 +107,7 @@ export const Metrics: React.FC = () => {
             <EuiSpacer size="s" />
             <BarChart
               data={
-                metrics?.byPriority.map(val => ({ x: val.priority, y: val.count })) ?? []
+                metrics?.byPriority.map(val => ({ x: formatLabel(val.priority), y: val.count })) ?? []
               }
               xAxisTitle="Priority"
               yAxisTitle="Tasks"
@@ -121,7 +122,7 @@ export const Metrics: React.FC = () => {
             <EuiSpacer size="s" />
             <BarChart
               data={
-                metrics?.byTag.map(val => ({ x: val.tag, y: val.count })) ?? []
+                metrics?.byTag.map(val => ({ x: formatLabel(val.tag), y: val.count })) ?? []
               }
               xAxisTitle="Framework"
               yAxisTitle="Tasks"

@@ -37,15 +37,13 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
                             items: [
                                 {
                                     name: ROUTES.OVERVIEW.label,
-                                    icon: <EuiIcon type={ROUTES.OVERVIEW.euiIconType} />
-                                    ,
+                                    icon: <EuiIcon type={ROUTES.OVERVIEW.euiIconType} />,
                                     id: 'overview',
                                     isSelected: location.pathname == ROUTES.OVERVIEW.path, onClick: () => history.push(ROUTES.OVERVIEW.path)
                                 },
                                 {
                                     name: ROUTES.METRICS.label,
-                                    icon: <EuiIcon type={ROUTES.METRICS.euiIconType} />
-                                    ,
+                                    icon: <EuiIcon type={ROUTES.METRICS.euiIconType} />,
                                     id: 'metrics',
                                     isSelected: location.pathname == ROUTES.METRICS.path, onClick: () => history.push(ROUTES.METRICS.path)
                                 },

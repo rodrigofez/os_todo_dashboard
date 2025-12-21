@@ -5,6 +5,7 @@ import {
   EuiFlexGroup,
   EuiFlexItem,
   EuiIcon,
+  EuiLoadingSpinner,
   EuiPageContent,
   EuiPageContentBody,
   EuiProgress,
@@ -18,8 +19,9 @@ import { useOverviewMetrics } from "../hooks/useOverviewMetrics";
 export const Overview = () => {
 
   const { data: overviewData, isLoading } = useOverviewMetrics()
+  const completionRate = Math.ceil(((overviewData?.completed ?? 0) / (overviewData?.total ?? 0)) * 100) || 0;
 
-  const completionRate = Math.ceil(((overviewData?.completed ?? 0) / (overviewData?.total ?? 0)) * 100);
+  if (isLoading) return <EuiLoadingSpinner />
 
   return (
     <>
@@ -54,7 +56,7 @@ export const Overview = () => {
                   <EuiFlexItem>
                     <EuiFlexGroup
                       alignItems="center"
-                      gutterSize="xs"
+                      gutterSize="s"
                       responsive={false}
                     >
                       <EuiFlexItem grow={false}>
@@ -74,7 +76,7 @@ export const Overview = () => {
                   <EuiFlexItem>
                     <EuiFlexGroup
                       alignItems="center"
-                      gutterSize="xs"
+                      gutterSize="s"
                       responsive={false}
                     >
                       <EuiFlexItem grow={false}>
@@ -94,7 +96,7 @@ export const Overview = () => {
                   <EuiFlexItem>
                     <EuiFlexGroup
                       alignItems="center"
-                      gutterSize="xs"
+                      gutterSize="s"
                       responsive={false}
                     >
                       <EuiFlexItem grow={false}>

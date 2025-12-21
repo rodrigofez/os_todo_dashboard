@@ -1,4 +1,3 @@
-import { i18n } from '@osd/i18n';
 import { AppMountParameters, CoreSetup, CoreStart, Plugin } from '../../../src/core/public';
 import {
   CustomPluginPluginSetup,
@@ -26,16 +25,7 @@ export class CustomPluginPlugin
     });
 
     // Return methods that should be available to other plugins
-    return {
-      getGreeting() {
-        return i18n.translate('customPlugin.greetingText', {
-          defaultMessage: 'Hello from {name}!',
-          values: {
-            name: PLUGIN_NAME,
-          },
-        });
-      },
-    };
+    return {};
   }
 
   public start(core: CoreStart): CustomPluginPluginStart {

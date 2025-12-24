@@ -8,7 +8,7 @@ Task management plugin for OpenSearch Dashboards.
 ## Features
 
 - **Task Management**: Create, update status, delete, and search tasks.
-- **Filtering & Search**: Search with status, priority filters.
+- **Filtering & Search**: Search with status, priority filters, sort and pagination.
 - **Metrics & Analytics**: Overview metrics, detailed analytics with charts.
 
 ## Overview

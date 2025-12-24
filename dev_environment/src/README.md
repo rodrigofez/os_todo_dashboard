@@ -1,6 +1,6 @@
 # Todo Plugin
 
-A full-featured task management plugin for OpenSearch Dashboards with a clean, layered architecture.
+Task management plugin for OpenSearch Dashboards.
 
 ![overview_preview](./docs/overview_prev.png)
 ![metrics_preview](./docs/metrics_prev.png)

@@ -1,3 +1,4 @@
 # Frontend static code
 src/target
 src/node_modules
+src/autom4te.cache

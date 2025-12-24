@@ -2,6 +2,9 @@
 
 A full-featured task management plugin for OpenSearch Dashboards with a clean, layered architecture.
 
+![overview_preview](./docs/overview_prev.png)
+![metrics_preview](./docs/metrics_prev.png)
+
 ## Features
 
 - **Task Management**: Create, update status, delete, and search tasks.
@@ -224,3 +227,4 @@ http.get.mockResolvedValue(response);
 - Better error feedback in frontend.
 - Introduce zod to do form validations.
 - Allow to update more than the status.
+- Use i18n.
